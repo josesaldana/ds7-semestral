@@ -34,5 +34,5 @@ interface PersistenceGatewayOperations {
     /**
      * Busca invitaciones en base a filtro
      */
-    function buscarInvitacion(int $mesa = null, string $invitado = null): array;
+    function buscarInvitacion(mixed $busqueda): array;
 }

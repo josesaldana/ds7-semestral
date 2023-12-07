@@ -80,6 +80,7 @@ class App
             PersistenceGatewayOperations::class => autowire(MySQLPersistenceGateway::class),
 
             ListarInvitacionesUseCase::class => autowire(ListarInvitacionesUseCase::class),
+            BuscarInvitacionUseCase::class => autowire(BuscarInvitacionUseCase::class),
             ListarAsistenciasUseCase::class => autowire(ListarAsistenciasUseCase::class),
             RegistrarAsistenciaUseCase::class => autowire(RegistrarAsistenciaUseCase::class)
         ]);

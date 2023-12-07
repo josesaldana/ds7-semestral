@@ -105,31 +105,27 @@ class MySQLPersistenceGateway implements PersistenceGatewayOperations
      * 
      * @return array of invitaciones
      */
-    public function buscarInvitacion(int $mesa = null, string $invitado = null): array {
+    public function buscarInvitacion(mixed $busqueda = null): array {
+        assert(isset($busqueda) && !empty($busqueda), "Se debe proveer el parámetro de búsqueda");
+
+        $parameters = [];
+
+        if (isset($busqueda) && is_numeric($busqueda)) {
+            $sql = "SELECT * FROM `invitaciones` WHERE mesa = ?";
+            array_push($parameters, intval($busqueda));
+        }
+
+        if (isset($busqueda) && is_string($busqueda)) {
+            $sql .= " UNION ";
+            $sql .= "SELECT * FROM `invitaciones` WHERE invitado LIKE ?";
+            array_push($parameters, "%{$busqueda}%");
+        }
+
         $resultados = $this->db
-            ->execute_query("SELECT 
-                        v.*,
-                        barco.barco_in_json as barco,
-                        (SELECT JSON_OBJECT(
-                            'codigo', p.codigo,
-                            'nombre', p.nombre,
-                            'telefono', p.telefono
-                        ) FROM conductor_patron p WHERE v.codpatron = p.codigo) as patron
-                    FROM viaje v
-                        LEFT JOIN(
-                            SELECT b.matricula,
-                            (SELECT JSON_OBJECT(
-                                'matricula', b.matricula,
-                                'nombre', b.nombre_barco,
-                                'numamarre', b.numamarre,
-                                'cuota', b.cuota            
-                            )) AS barco_in_json
-                            FROM barco b WHERE MATCH (b.nombre_barco) AGAINST (? IN NATURAL LANGUAGE MODE)
-                        ) barco ON v.matribarco = barco.matricula
-                    WHERE barco.matricula IS NOT NULL", [$busqueda])
+            ->execute_query($sql, $parameters)
             ->fetch_all(MYSQLI_ASSOC);
 
-        $invitaciones = array_map(fn($record) => $this->mapper->convertToViaje($record), $resultados);
+        $invitaciones = array_map(fn($record) => $this->mapper->convertToInvitacion($record), $resultados);
 
         return $invitaciones;
     }

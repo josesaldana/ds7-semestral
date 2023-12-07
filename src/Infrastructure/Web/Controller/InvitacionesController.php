@@ -4,6 +4,7 @@ namespace Ds7\Semestral\Infrastructure\Web\Controller;
 
 use Ds7\Semestral\Core\Model\Invitacion;
 use Ds7\Semestral\Core\UseCase\ListarInvitacionesUseCase;
+use Ds7\Semestral\Core\UseCase\BuscarInvitacionUseCase;
 use Ds7\Semestral\Application\ResponseEmitter;
 use Ds7\Semestral\Application\TemplatesProcessor;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,13 +13,17 @@ use Psr\Http\Message\ResponseInterface;
 class InvitacionesController extends AbstractController
 {
     private ListarInvitacionesUseCase $listarInvitacionesUseCase;
+    private BuscarInvitacionUseCase $buscarInvitacionUseCase;
 
     public function __construct(ResponseInterface  $response,
                                 TemplatesProcessor $templatesProcessor,
                                 ResponseEmitter    $responseEmitter,
-                                ListarInvitacionesUseCase $listarInvitacionesUseCase) {
+                                ListarInvitacionesUseCase $listarInvitacionesUseCase,
+                                BuscarInvitacionUseCase $buscarInvitacionUseCase) {
         parent::__construct($response, $templatesProcessor, $responseEmitter);
+
         $this->listarInvitacionesUseCase = $listarInvitacionesUseCase;
+        $this->buscarInvitacionUseCase = $buscarInvitacionUseCase;
     }
 
     /**
@@ -47,11 +52,15 @@ class InvitacionesController extends AbstractController
         $queryParams = $request->getQueryParams();
 
         $invitaciones = 
-            (isset($queryParams['busqueda-viaje']) && !empty(trim($queryParams['busqueda-viaje']))) ?
-                $this->listarInvitacionesUseCase->listarinvitaciones(trim($queryParams['busqueda-viaje'])) :
+            (isset($queryParams['busqueda-invitado']) && !empty(trim($queryParams['busqueda-invitado']))) ?
+                $this->buscarInvitacionUseCase->buscarInvitacion(trim($queryParams['busqueda-invitado'])) :
                 $this->listarInvitacionesUseCase->listarinvitaciones();
 
-        $this->view('lista-invitaciones.html', ['invitaciones' => $invitaciones]);
+        try {
+            $this->view('lista-invitaciones.html', ['invitaciones' => $invitaciones]);
+        } catch (\Exception $e) {
+            $this->error($e);
+        }
     }
 
     /**
