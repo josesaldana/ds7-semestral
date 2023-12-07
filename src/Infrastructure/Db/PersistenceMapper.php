@@ -25,12 +25,18 @@ class PersistenceMapper
     }
 
     public function convertToAsistencia(array $input): Asistencia {
+        $invitacion = json_decode($input['invitacion']);
+
         $asistencia = new Asistencia(
             id: $input['id'],
-            acompanantes: $input['acompanantes']
+            acompanantes: $input['acompanantes'],
+            invitacion: $this->convertToInvitacion([
+                'numero' => $invitacion->numero,
+                'invitado' => $invitacion->invitado,
+                'mesa' => $invitacion->mesa,
+                'acompanantes' => $invitacion->acompanantes
+            ])
         );
-
-        $asistencia->invitacion = $this->convertInvitacion(json_decode($input['invitacion']));
 
         return $asistencia;
     }

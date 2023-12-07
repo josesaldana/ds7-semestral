@@ -1,25 +1,21 @@
-{% if viajes|length == 0 %}
-<p>No hay viajes registrados que coincidan.</p>
+{% if asistencias|length == 0 %}
+<p>No hay asistencias registrados que coincidan.</p>
 {% else %}
 <div class="w-full">
     <table class="table table-zebra mt-5">
         <thead class="bg-slate-300">
-            <th class="py-5 rounded-tl-lg">N&uacute;mero</th>
-            <th class="py-5">Destino</th>
-            <th class="py-5">Fecha</th>
-            <th class="py-5">Hora</th>
-            <th class="py-5">Barco</th>
-            <th class="py-5 rounded-tr-lg">Conductor / Patr&oacute;n</th>
+            <th class="py-5 rounded-tl-lg">Invitacion</th>
+            <th class="py-5">Invitado</th>
+            <th class="py-5">Reservados</th>
+            <th class="py-5 rounded-tr-lg">Asistieron</th>
         </thead>
         <tbody>
-        {% for viaje in viajes %}
+        {% for asistencia in asistencias %}
         <tr>
-            <td>{{ viaje.numero }}</td>
-            <td>{{ viaje.destino }}</td>
-            <td>{{ viaje.fecha }}</td>
-            <td>{{ viaje.hora }}</td>
-            <td>{{ viaje.barco.nombre }}</td>
-            <td>{{ viaje.patron.nombre }}</td>
+            <td>{{ asistencia.invitacion.numero }}</td>
+            <td>{{ asistencia.invitacion.invitado }}</td>
+            <td>{{ asistencia.invitacion.acompanantes }}</td>
+            <td>{{ asistencia.acompanantes }}</td>
         </tr>
         {% endfor %}
         </tbody>

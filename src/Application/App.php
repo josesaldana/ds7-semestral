@@ -94,7 +94,8 @@ class App
             $r->get('/asistencias', AsistenciasController::class);
             $r->get('/asistencias/list', AsistenciasController::class);
             $r->get('/asistencias/summary', AsistenciasController::class);
-            $r->get('/asistencias/create', AsistenciasController::class);
+            $r->post('/asistencias/create', AsistenciasController::class);
+            
         }, [
             'cacheFile' => __DIR__ . '/route.cache', 
             'cacheDisabled' => $isDebugEnabled,

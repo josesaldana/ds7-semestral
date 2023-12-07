@@ -21,10 +21,13 @@ class RegistrarAsistenciaUseCase {
      *      sobreasignación de patrón/hora, etc)
      * @todo Cambiar Exception a domain exception
      */
-    public function registrarAsistencia(int $mesa, int $acompanantes): void {
-        $invitacion = $this->persistence->buscarInvitacion(numero: $mesa);
+    public function registrarAsistencia(int $invitacion, int $acompanantes): void {
+        $invitacion = $this->persistence->obtenerInvitacion(numero: $invitacion);
+
+        // TODO: Validar que el numero de acompañantes que asiste sea menor al invitado?
 
         $asistencia = new Asistencia(
+            id: 0,
             invitacion: $invitacion,
             acompanantes: $acompanantes
         );

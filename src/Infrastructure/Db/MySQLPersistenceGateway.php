@@ -32,7 +32,11 @@ class MySQLPersistenceGateway implements PersistenceGatewayOperations
      */
     public function obtenerInvitaciones(): array {
         $resultados = $this->db
-            ->query("SELECT * FROM invitaciones")
+            ->query("SELECT 
+                        i.* 
+                    FROM invitaciones i 
+                        LEFT JOIN asistencias a ON i.numero = a.invitacion 
+                    WHERE a.invitacion IS NULL")
             ->fetch_all(MYSQLI_ASSOC);
 
         return array_map(fn($record) => $this->mapper->convertToInvitacion($record), $resultados);
@@ -88,7 +92,7 @@ class MySQLPersistenceGateway implements PersistenceGatewayOperations
         $stmt->bind_param(
             "ii",
             $asistencia->invitacion->numero,
-            $viaje->acompanantes,
+            $asistencia->acompanantes,
         );
 
         $stmt->execute();

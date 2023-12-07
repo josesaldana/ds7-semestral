@@ -35,7 +35,9 @@
                             hx-post="/asistencias/create" 
                             hx-target="#lista-invitaciones" 
                             hx-swap="innerHTML"
-                            class="grid grid-cols-3 grid-rows-4 place-items-center w-full p-5">
+                            class="grid grid-cols-3 grid-rows-5 place-items-center w-full p-5">
+                        <label for="invitacion" class="justify-self-start" >Invitaci&oacute;n:</label>
+                        <input type="text" name="invitacion" readonly value="{{ invitacion.numero }}" class="input col-span-2 w-full">
                         <label for="invitado" class="justify-self-start" >Invitado:</label>
                         <input type="text" name="invitado" readonly value="{{ invitacion.invitado }}" class="input col-span-2 w-full">
                         <label for="codigo" class="justify-self-start" >Mesa:</label>

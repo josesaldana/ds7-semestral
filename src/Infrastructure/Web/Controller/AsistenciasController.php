@@ -28,15 +28,21 @@ class AsistenciasController extends AbstractController
     public function __invoke(ServerRequestInterface $request): void {
         $path = $request->getServerParams()['REQUEST_URI'];
 
-        if ($path === '/asistencias/list') {
+        if ($path === '/asistencias') {
+            $this->mostrarAsistencias();
+        } else if ($path === '/asistencias/list') {
             $this->mostrarListaDeAsistencias();
         } else if ($path === '/asistencias/create') {
-            crearAsistencia($request);
+            $this->crearAsistencia($request);
         }
     }
 
+    public function mostrarAsistencias(): void {
+        $this->view('asistencias.html', []);
+    }
+
     public function mostrarListaDeAsistencias(): void {
-        $this->view('asistencias.html', [
+        $this->view('lista-asistencias.html', [
             'asistencias' => $this->listarAsistenciasUseCase->listarAsistencias()
         ]);
     }
@@ -50,11 +56,14 @@ class AsistenciasController extends AbstractController
     public function crearAsistencia(ServerRequestInterface $request) {
         $requestBody = $request->getParsedBody();
 
-        ['mesa' => $mesa, 'acompanantes' => $acompanantes] = $requestBody;
+        ['invitacion' => $invitacion, 'acompanantes' => $acompanantes] = $requestBody;
 
-        $this->registrarAsistenciaUseCase->registrarInvitacion($mesa, $acompanantes);
-
-        $this->redirect("/invitaciones/list");
+        try {
+            $this->registrarAsistenciaUseCase->registrarAsistencia($invitacion, $acompanantes);
+            $this->redirect("/invitaciones/list");
+        } catch (\Exception $e) {
+            $this->view('error.html', ['message' => $e->message]);
+        }
     }
 }
 
