@@ -5,6 +5,7 @@ namespace Ds7\Semestral\Infrastructure\Web\Controller;
 use Ds7\Semestral\Application\ResponseEmitter;
 use Ds7\Semestral\Application\TemplatesProcessor;
 use Ds7\Semestral\Core\UseCase\ListarAsistenciasUseCase;
+use Ds7\Semestral\Core\UseCase\ListarInvitacionesUseCase;
 use Ds7\Semestral\Core\UseCase\RegistrarAsistenciaUseCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -12,16 +13,19 @@ use Psr\Http\Message\ResponseInterface;
 class AsistenciasController extends AbstractController
 {
     private ListarAsistenciasUseCase $listarAsistenciasUseCase;
+    private ListarInvitacionesUseCase $listarInvitacionesUseCase;
     private RegistrarAsistenciaUseCase $registrarAsistenciaUseCase;
 
     public function __construct(ResponseInterface  $response,
                                 TemplatesProcessor $templatesProcessor,
                                 ResponseEmitter    $responseEmitter,
                                 ListarAsistenciasUseCase $listarAsistenciasUseCase,
+                                ListarInvitacionesUseCase $listarInvitacionesUseCase,
                                 RegistrarAsistenciaUseCase $registrarAsistenciaUseCase) {
         parent::__construct($response, $templatesProcessor, $responseEmitter);
 
         $this->listarAsistenciasUseCase = $listarAsistenciasUseCase;
+        $this->listarInvitacionesUseCase = $listarInvitacionesUseCase;
         $this->registrarAsistenciaUseCase = $registrarAsistenciaUseCase;
     }
 
@@ -32,6 +36,8 @@ class AsistenciasController extends AbstractController
             $this->mostrarAsistencias();
         } else if ($path === '/asistencias/list') {
             $this->mostrarListaDeAsistencias();
+        } else if ($path === '/asistencias/summary') {
+            $this->mostrarSummaryDeAsistencia();
         } else if ($path === '/asistencias/create') {
             $this->crearAsistencia($request);
         }
@@ -44,6 +50,17 @@ class AsistenciasController extends AbstractController
     public function mostrarListaDeAsistencias(): void {
         $this->view('lista-asistencias.html', [
             'asistencias' => $this->listarAsistenciasUseCase->listarAsistencias()
+        ]);
+    }
+
+    /**
+     * Muestra un resumen de cuantas invitaciones se hicieron y cuantas 
+     * han sido consumidas
+     */
+    public function mostrarSummaryDeAsistencia() {
+        $this->view('summary-asistencias.html', [
+            'invitaciones' => count($this->listarInvitacionesUseCase->listarInvitaciones()),
+            'asistencias' => count($this->listarAsistenciasUseCase->listarAsistencias()),
         ]);
     }
 
