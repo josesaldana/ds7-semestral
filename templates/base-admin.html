@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="flex flex-row text-white">
+    <div class="w-1/4 flex flex-row bg-cyan-500 dark:bg-neutral py-5 px-5 border-r border-solid border-slate-200 dark:border-slate-700">
+        <a href="/" class="text-2xl flex-grow self-end">Event Manager</a>
+        <button class="self-end i-carbon-sun dark:i-carbon-moon" alt="Dark Mode" onclick="javascript:toggleDarkMode();"  />
+    </div>
+    <div class="w-full flex flex-row items-center bg-slate-500 dark:bg-neutral dark:text-neutral-content px-5 py-5">
+        <h1 class="text-2xl flex-grow">{% block pageTitle %}{% endblock %}</h1>
+        <!-- <button class="btn btn-primary mr-5" hx-get="/nueva-asistencia" hx-target="#page-container" hx-swap="innerHTML">Registrar Asistencia</button> -->
+        <!-- <h2 class="text-xl">12:30 PM</h2>   -->
+    </div>
+</header>
+
+<main class="flex flex-row flex-grow relative">
+    <div class="w-1/4 flex flex-col self-stretch px-5 bg-base-100 light:border-r-0 dark:border-r dark:border-solid dark:border-slate-700">
+        <a class="w-full px-5 py-3 mt-8 text-center cursor-pointer" 
+            href="/">Inicio</a>
+
+        <a class="w-full px-5 py-3 text-center cursor-pointer" 
+            hx-get="/asistencias/list"
+            hx-target="#page-container" 
+            hx-swap="innerHTML">Asistencias</a>
+
+        <a class="w-full px-5 py-3 text-center" href="/logout">Salir</a>
+    </div>
+    <div id="page-container" class="w-full bg-base-100 px-10 py-5">
+        {% block pageContent %}{% endblock %}
+    </div>
+</main>
+{% endblock %}

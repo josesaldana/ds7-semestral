@@ -1,0 +1,28 @@
+{% if viajes|length == 0 %}
+<p>No hay viajes registrados que coincidan.</p>
+{% else %}
+<div class="w-full">
+    <table class="table table-zebra mt-5">
+        <thead class="bg-slate-300">
+            <th class="py-5 rounded-tl-lg">N&uacute;mero</th>
+            <th class="py-5">Destino</th>
+            <th class="py-5">Fecha</th>
+            <th class="py-5">Hora</th>
+            <th class="py-5">Barco</th>
+            <th class="py-5 rounded-tr-lg">Conductor / Patr&oacute;n</th>
+        </thead>
+        <tbody>
+        {% for viaje in viajes %}
+        <tr>
+            <td>{{ viaje.numero }}</td>
+            <td>{{ viaje.destino }}</td>
+            <td>{{ viaje.fecha }}</td>
+            <td>{{ viaje.hora }}</td>
+            <td>{{ viaje.barco.nombre }}</td>
+            <td>{{ viaje.patron.nombre }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}

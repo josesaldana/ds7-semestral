@@ -1,0 +1,7 @@
+.idea
+*.iml
+vendor
+/db
+.phpunit.result.cache
+composer.phar
+.env

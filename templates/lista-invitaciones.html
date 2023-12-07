@@ -1,0 +1,63 @@
+{% if invitaciones|length == 0 %}
+<p>No hay invitaciones registradas o que coincidan.</p>
+{% else %}
+<div class="w-full overflow-x-auto">
+    <table class="table mt-5">
+        <thead class="bg-sky-200">
+            <th class="py-5 text-center rounded-tl-lg rounded-bl-lg bordered-b-1">N&uacute;mero</th>
+            <th class="py-5 text-center w-1/4">Invitado</th>
+            <th class="py-5 text-center">Mesa</th>
+            <th class="py-5 text-center">Acompa&ntilde;antes</th>
+            <th class="py-5 text-center rounded-tr-lg rounded-br-lg"></th>
+        </thead>
+        <tbody class="[&>*:first-child]:border-t-1">
+        {% for invitacion in invitaciones %}
+        <tr class="border-b-1 border-dashed border-sky-200 hover">
+            <td class="text-center">{{ invitacion.numero }}</td>
+            <td class="text-center">{{ invitacion.invitado }}</td>
+            <td class="text-center">{{ invitacion.mesa }}</td>
+            <td class="text-center">{{ invitacion.acompanantes }}</td>
+            <td class="text-center">
+                <button class="btn btn-outline"
+                        _="on click halt the event call agregarAsistenciaModal_{{invitacion.numero}}.showModal()">
+                    Registrar Asistencia
+                </button>
+                <dialog id="agregarAsistenciaModal_{{invitacion.numero}}" class="modal modal-bottom sm:modal-middle">
+                    <div class="modal-box">
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <h3 class="font-bold text-lg">Registrar Asistencia</h3>
+                    <form id="form-nuevo-asistencia"
+                            action="/asistencias/create" 
+                            method="POST" 
+                            hx-boost
+                            hx-post="/asistencias/create" 
+                            hx-target="#lista-invitaciones" 
+                            hx-swap="innerHTML"
+                            class="grid grid-cols-3 grid-rows-4 place-items-center w-full p-5">
+                        <label for="invitado" class="justify-self-start" >Invitado:</label>
+                        <input type="text" name="invitado" readonly value="{{ invitacion.invitado }}" class="input col-span-2 w-full">
+                        <label for="codigo" class="justify-self-start" >Mesa:</label>
+                        <input type="text" name="mesa" readonly value="{{ invitacion.mesa }}" class="input col-span-2 w-full">
+                        <label for="codigo" class="justify-self-start">Acompa&ntilde;antes:</label>
+                        <input type="text" name="acompanantes" class="input input-bordered col-span-2 w-full">
+                        <button type="submit" class="btn btn-secondary btn-outline w-1/4 self-end mt-3 col-span-3 place-self-end">Guardar</button>
+                    </form>
+                    </div>
+                </dialog>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+  
+<script>
+    htmx.on('htmx:afterRequest', (evt) => {
+        if (evt.srcElement.id === 'form-nuevo-asistencia') {
+            evt.srcElement.parentNode.querySelector("form[method=dialog] > button").click();
+        }
+    });
+</script> 
+{% endif %}
